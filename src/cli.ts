@@ -16,6 +16,7 @@ import { Agent } from "./index.js";
 import { resolveSessionKey } from "./session-key.js";
 import { getEnvApiKey } from "@mariozechner/pi-ai";
 import type { ApprovalConfig, ApprovalDecision, ApprovalRequest } from "./tool-approval.js";
+import { Console } from "node:console";
 
 // ============== .env 加载 ==============
 
@@ -165,13 +166,19 @@ function clearPromptEchoLine(): void {
 // ============== 主函数 ==============
 
 async function main() {
+  console.log("jfq enter main, env.provider:", process.env.OPENCLAW_MINI_PROVIDER);
+  console.log("jfq enter main, env.model:", process.env.OPENCLAW_MINI_MODEL);
+  console.log("jfq enter main, env.url:", process.env.OPENCLAW_MINI_BASE_URL);
+  console.log("jfq enter main, env.api-key:", process.env.OPENAI_API_KEY);
+  
   const args = process.argv.slice(2);
   const provider = readFlag(args, "--provider") ?? process.env.OPENCLAW_MINI_PROVIDER ?? "anthropic";
   const model = readFlag(args, "--model") ?? process.env.OPENCLAW_MINI_MODEL;
   const baseUrl = readFlag(args, "--base-url") ?? process.env.OPENCLAW_MINI_BASE_URL;
   const reasoningFlag = readFlag(args, "--reasoning") ?? process.env.OPENCLAW_MINI_REASONING;
   const reasoning = reasoningFlag === "none" ? undefined : (reasoningFlag as any) ?? "medium";
-  const apiKey = readFlag(args, "--api-key") ?? getEnvApiKey(provider);
+  // const apiKey = readFlag(args, "--api-key") ?? getEnvApiKey(provider);
+  const apiKey = readFlag(args, "--api-key") ?? process.env.OPENAI_API_KEY;
   if (!apiKey) {
     console.error(`错误: 未找到 ${provider} 的 API Key，请设置对应环境变量或使用 --api-key 参数`);
     process.exit(1);

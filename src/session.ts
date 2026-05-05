@@ -44,13 +44,17 @@ export interface Message {
 
 /**
  * 内容块结构
- * 支持文本、工具调用、工具结果三种类型
+ * 支持文本、思考、工具调用、工具结果四种类型
  */
 export interface ContentBlock {
   /** 类型 */
-  type: "text" | "tool_use" | "tool_result";
+  type: "text" | "thinking" | "tool_use" | "tool_result";
   /** 文本内容 (type=text 时) */
   text?: string;
+  /** 思考内容 (type=thinking 时，用于 DeepSeek/Claude 的 reasoning_content) */
+  thinking?: string;
+  /** 思考签名 (type=thinking 时，部分 provider 需要原样回传) */
+  thinkingSignature?: string;
   /** 工具调用 ID (type=tool_use 时由 API 生成) */
   id?: string;
   /** 工具名称 (type=tool_use 时) */

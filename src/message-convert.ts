@@ -9,6 +9,7 @@ import type { Message } from "./session.js";
 import type {
   Message as PiMessage,
   TextContent as PiTextContent,
+  ThinkingContent as PiThinkingContent,
   ToolCall as PiToolCall,
 } from "@mariozechner/pi-ai";
 
@@ -85,10 +86,14 @@ export function convertMessagesToPi(
         continue;
       }
 
-      const piContent: (PiTextContent | PiToolCall)[] = [];
+      const piContent: (PiTextContent | PiThinkingContent | PiToolCall)[] = [];
       for (const block of msg.content) {
         if (block.type === "text" && block.text) {
           piContent.push({ type: "text", text: block.text });
+        } else if (block.type === "thinking" && block.thinking) {
+          const tc: PiThinkingContent = { type: "thinking", thinking: block.thinking };
+          if (block.thinkingSignature) tc.thinkingSignature = block.thinkingSignature;
+          piContent.push(tc);
         } else if (block.type === "tool_use") {
           piContent.push({
             type: "toolCall",

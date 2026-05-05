@@ -250,8 +250,15 @@ export function runAgentLoop(params: AgentLoopParams): EventStream<MiniAgentEven
                       break;
 
                     case "thinking_end":
-                      // thinking 内容保存到 assistant message（对齐 pi-agent-core）
-                      // 但不计入 turnTextParts（思考不是最终输出）
+                      // thinking 内容必须原样保存并在下一轮回传给 API
+                      // DeepSeek 要求 reasoning_content 必须随 assistant 消息一起传回
+                      assistantContent.push({
+                        type: "thinking",
+                        thinking: (event as any).content ?? "",
+                        thinkingSignature: (event as any).partial?.content?.find?.(
+                          (c: any) => c.type === "thinking"
+                        )?.thinkingSignature,
+                      });
                       break;
 
                     case "text_delta":

@@ -286,6 +286,7 @@ export class Agent {
       anthropic: "anthropic-messages",
       openai: "openai-completions",
       google: "google-generative-ai",
+      deepseek: "openai-completions",
     };
     let modelDef: Model<any> | undefined = config.modelDef ?? getModel(provider as any, modelId as any);
     if (!modelDef && modelId) {
